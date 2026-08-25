@@ -182,3 +182,36 @@ for this demonstration, and a test asserts the shipped one contains no figures.
 ---
 
 Author: **Oussama Ezitouni**
+
+---
+
+## The five steps, and how they are built
+
+**1. Role** — one system message per persona: *budget travel assistant* and *strict grammar
+teacher*. Both end with the same two rules, keep it short and do not invent facts, because a 3B
+model drifts into essays and invents plausible prices otherwise.
+
+**2. Memory** — `ConversationBuffer` stores the turns and replays them on every call. The model is
+**stateless**; it remembers nothing between requests. `max_turns` caps the replay, because the
+request otherwise grows until it silently overflows the context window.
+
+**3. Few-shot (optional)** — one worked exchange per role, folded into the system message and
+labelled as an example. See "The bug this demo found" above for why placement and content both
+matter.
+
+**4. Testing** — turns 3–5 of each demo refer back to earlier details *without repeating them*
+("within my budget", "how many days would that need"), which is the only way to tell real memory
+from a lucky guess.
+
+**5. Reflection** — the reflection section above: the role held except for two honest slips, all
+three remembered details came back correctly, and a reset wipes the conversation while leaving the
+role intact.
+
+## Files
+
+| File | Contents |
+|---|---|
+| `assistant.py` | Roles, `ConversationBuffer`, the model call |
+| `run_demo.py` | Both demos, the reset experiment, the measured bug |
+| `tests.py` | 17 tests on the buffer and the roles |
+| `docs/output.txt` | Raw log |
