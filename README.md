@@ -4,15 +4,21 @@ An assistant that holds a persona (a system message) and remembers previous turn
 buffer). Two roles — budget travel assistant and strict grammar teacher — running on a local
 model, no API key.
 
-Building it turned up a failure worth knowing about. The travel role's few-shot example mentioned
-*"I have 300 euros"*. Later, asked to recall a budget the user had actually given as **800**, the
-assistant answered **300** — wrong 4/4 times with the example injected as chat turns, 3/4 with it
-in the system message, 0/4 once the figure was removed. To the model an example turn is
-indistinguishable from real history, and examples survive a memory reset, so the wrong number
-outlived the conversation that should have corrected it.
+Building it turned up a failure worth knowing about, and then re-running it turned up something
+better. The travel role's few-shot example mentioned *"I have 300 euros"*. Asked later to recall a
+budget the user had actually given as **800**, `llama3.2:3b` answered **300** — wrong 4/4 times
+with the example injected as chat turns, 3/4 with it in the system message, 0/4 once the figure was
+removed. To that model an example turn was indistinguishable from real history, and examples
+survive a memory reset, so the wrong number outlived the conversation that should have corrected
+it.
+
+On `qwen3:8b` the leak never appeared — 0/4 in every variant, including the worst one. Same
+prompts, same code. So it is a capability failure rather than a structural one, which is worth
+knowing but changes nothing about the fix: a bug that depends on which model you loaded is not a
+bug you have fixed, and taking the number out of an example costs nothing.
 
 ```bash
-ollama serve && ollama pull llama3.2:3b
+ollama serve && ollama pull qwen3:8b
 
 python3 run_demo.py              # scripted demos + reset experiment
 python3 assistant.py             # talk to it (travel role)

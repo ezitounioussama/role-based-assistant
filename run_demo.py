@@ -120,15 +120,19 @@ def main():
     header("THE FEW-SHOT CONTAMINATION BUG — MEASURED")
 
     print("""
-  Found while building this demo, and worth the space because it is subtle.
+  Found on llama3.2:3b while building this demo, and worth the space because it
+  is subtle AND because it turned out to be model-dependent.
 
   The first version of the travel example opened with "I have 300 euros and a
   long weekend". Asked later to recall the budget — after the user had said 800
-  euros — the assistant answered 300. The figure from the EXAMPLE was reported
-  as the user's own. Nothing errored.
+  euros — llama3.2:3b answered 300. The figure from the EXAMPLE was reported as
+  the user's own. Nothing errored.
 
   Four variants, same 2-turn conversation each time, then "Remind me what my
-  budget was." Counting how often the answer contains 300 instead of 800.""")
+  budget was." Counting how often the answer contains 300 instead of 800.
+
+  Recorded on llama3.2:3b:  4/4 as chat turns, 3/4 in the system message,
+                            0/4 with the figure removed, 0/4 with no examples.""")
 
     from assistant import ROLES, ConversationBuffer, chat
 
@@ -149,6 +153,7 @@ def main():
     section(f"Failure rate over {runs} runs each")
     print(f"  {'variant':46} {'said 300 (wrong)':>18}")
 
+    results = {}
     for label, few_shot, mode in (
         ("examples as chat turns, example says '300'", trap, "messages"),
         ("examples in system message, says '300'", trap, "system"),
@@ -156,20 +161,38 @@ def main():
         ("no examples at all", None, "system"),
     ):
         wrong = sum(1 for _ in range(runs) if "300" in one_run(few_shot, mode))
+        results[label] = wrong
         print(f"  {label:46} {wrong:>13}/{runs}")
 
-    print("""
-  Reading it:
-    - As chat turns, the example is indistinguishable from real history, and the
-      leak is reliable rather than occasional.
-    - Moving the examples into the system message helps, but far from reliably:
-      pooled across runs it leaked 10/10 times as chat turns against 4/10 in the
-      system message. Better, not fixed.
-    - Removing the figure fixes it. The example exists to demonstrate STYLE, so a
-      concrete number in it buys nothing and can be mistaken for a fact.
+    # The conclusions are written from the numbers just measured, not hard-coded.
+    # An earlier version of this file stated the llama3.2:3b findings as fact;
+    # on qwen3:8b they became wrong while still being printed.
+    with_figure = sum(v for k, v in results.items() if "'300'" in k)
+    without_figure = sum(v for k, v in results.items() if "'300'" not in k)
+    total_with = 2 * runs
 
-  The travel role now ships the figure-free example. The version with 300 euros is
-  kept in the code as `few_shot_trap`, used only by this demonstration.""")
+    print(f"""
+  Reading THIS run ({MODEL}):
+    - With the figure present, the wrong number came back {with_figure}/{total_with} times.
+    - With no figure in the example, {without_figure}/{total_with}.""")
+
+    if with_figure == 0:
+        print("""    - This model did not reproduce the leak at all. The bug is real and was
+      measured on llama3.2:3b (4/4 as chat turns); a stronger model separates
+      example turns from real history reliably enough that it did not appear
+      once here. Model capability, not prompt structure, decided it.
+    - The mitigation is kept anyway. It costs nothing, and a failure that
+      depends on which model you loaded is not a failure you have fixed.""")
+    else:
+        print("""    - The leak reproduced. An example turn is indistinguishable from real
+      history to the model, so a concrete figure in an example can be reported
+      back as the user's own fact.
+    - Removing the figure is the fix. The example exists to demonstrate STYLE,
+      so a number in it buys nothing and can be mistaken for data.""")
+
+    print("""
+  The travel role ships the figure-free example either way. The version with
+  300 euros is kept in the code as `few_shot_trap`, used only by this demo.""")
 
     section("What the reset did and did not remove")
     print("""  Gone      : every user and assistant turn — Spain, 800 euros, no big cities.

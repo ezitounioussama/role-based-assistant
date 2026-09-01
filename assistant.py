@@ -17,7 +17,7 @@ import urllib.error
 import urllib.request
 
 BASE_URL = "http://127.0.0.1:11434"
-MODEL = "llama3.2:3b"
+MODEL = "qwen3:8b"
 
 
 class OllamaError(RuntimeError):
@@ -246,6 +246,9 @@ def chat(messages, temperature=0.3, max_tokens=250):
     """
     payload = {
         "model": MODEL,
+        # qwen3 reasons by default and returns an EMPTY reply with the chain of
+        # thought in a separate field, so thinking is off.
+        "think": False,
         "messages": messages,
         "stream": False,
         "options": {"temperature": temperature, "num_predict": max_tokens},
