@@ -2,7 +2,7 @@
 ================================================================================
 SETUP
 ================================================================================
-  Model : llama3.2:3b via Ollama (local, no API key)
+  Model : qwen3:8b via Ollama (local, no API key)
   Role  = a system message.  Memory = the turn list, replayed every call.
   The model itself is stateless: it remembers nothing between requests.
 
@@ -13,7 +13,7 @@ DEMO — Budget Travel Assistant  (role: travel)
   [Turn 1]
   User: I want to visit Spain.
 
-  Budget Travel Assistant: Spain is a great choice! Considering your long weekend, I'd recommend Seville. It's a vibrant city with a rich history, and you can explore the historic centre, visit the Alcázar Palace, and stroll along the Guadalquivir River. Accommodation and food prices are relatively low, making it a budget-friendly option. Rough estimate, but you can find a hostel bed for around €20-€30 per night. Would you like more specific suggestions or help with flights?
+  Budget Travel Assistant: What's your budget and how many days are you planning to stay? Spain has many affordable options depending on where you go and how you travel.
 
   (memory now holds 1 exchanges, next request sends 3 messages)
 
@@ -21,13 +21,7 @@ DEMO — Budget Travel Assistant  (role: travel)
   User: Yes, around 800 euros.
         ^ gives the budget only — never repeats 'Spain'
 
-  Budget Travel Assistant: With a budget of around 800 euros for the long weekend, I'd suggest Seville, as I mentioned earlier. Flights from the UK can be found for around 150-200 euros, depending on the departure city and time of booking. Accommodation, food, and attractions can be split to fit your budget. Here's a rough breakdown:
-
-* Flights: 150-200 euros
-* Accommodation (3 nights in a hostel): 150-200 euros
-* Food and attractions: 200-300 euros
-
-Total: around 500-600 euros, leaving some room for additional expenses or upgrades. Would you like me to suggest some specific hostels or booking platforms?
+  Budget Travel Assistant: With 800 euros, you could visit a budget-friendly region like Andalusia for 5-7 days. Stay in a hostel or guesthouse in Seville or Granada, eat at local markets, and use public transport — all within your budget. Would you prefer a coastal area or a city with history?
 
   (memory now holds 2 exchanges, next request sends 5 messages)
 
@@ -35,7 +29,7 @@ Total: around 500-600 euros, leaving some room for additional expenses or upgrad
   User: I'd rather avoid big cities.
         ^ adds a preference, still no destination or budget mentioned
 
-  Budget Travel Assistant: Considering you'd like to avoid big cities, I'd recommend the town of Ronda in Andalusia. It's a charming town with a rich history, stunning natural scenery, and a more relaxed atmosphere. You can explore the historic centre, visit the Puente Nuevo bridge, and take in the views of the gorge below. Accommodation prices are relatively low, with hostels starting from around €25-€35 per night. Flights from the UK can be found for around 100-150 euros, depending on the departure city and time of booking. Would you like more information on Ronda?
+  Budget Travel Assistant: Perfect — consider the Costa de la Luz in Andalusia, near the Atlantic coast. It’s less crowded than major cities, with affordable accommodation, fresh seafood, and scenic beaches. You can also explore nearby towns like Arcos de la Frontera or El Puerto de Santa María on a budget. Would you like tips on getting there?
 
   (memory now holds 3 exchanges, next request sends 7 messages)
 
@@ -43,7 +37,7 @@ Total: around 500-600 euros, leaving some room for additional expenses or upgrad
   User: Can you suggest something else within my budget?
         ^ says 'my budget' without the number: needs memory of 800 euros
 
-  Budget Travel Assistant: Another option within your budget is the town of Cuenca, also in Andalusia. It's a picturesque town with a rich history, stunning architecture, and a more laid-back atmosphere. You can explore the historic centre, visit the Iglesia de la Asunción, and take in the views of the surrounding countryside. Accommodation prices are relatively low, with hostels starting from around €20-€30 per night. Flights from the UK can be found for around 100-150 euros, depending on the departure city and time of booking. Would you like more information on Cuenca?
+  Budget Travel Assistant: Certainly! The Almería region is another great option — it’s quieter than the Costa del Sol, with beautiful beaches, olive groves, and the unique rock formations of Roquetas de Mar. You can stay in a budget hostel, eat at local family-run restaurants, and travel by bus or bike. It’s all within your 800 euro budget. Would you like help planning a 5-7 day itinerary?
 
   (memory now holds 4 exchanges, next request sends 9 messages)
 
@@ -51,7 +45,7 @@ Total: around 500-600 euros, leaving some room for additional expenses or upgrad
   User: How many days would that need?
         ^ says 'that' — needs memory of the suggestion just made
 
-  Budget Travel Assistant: Cuenca is a relatively small town, and you can easily explore it in 2-3 days. With 3 days, you can take your time to wander the historic centre, visit the main attractions, and enjoy the local cuisine and nightlife. If you have a bit more time, 4 days would give you even more flexibility to explore the surrounding countryside and villages.
+  Budget Travel Assistant: The Almería region can be comfortably explored in 5-7 days, allowing time to relax on the beach, visit nearby towns, and enjoy local culture without overspending. If you’re looking for a slower pace, you could even extend it to 10 days. Would you like a sample itinerary?
 
   (memory now holds 5 exchanges, next request sends 11 messages)
 
@@ -68,8 +62,8 @@ DEMO — Strict Grammar Teacher  (role: grammar)
   [Turn 1]
   User: she dont like apple's
 
-  Strict Grammar Teacher: Corrected: She doesn't like apples.
-Errors: - 'she' needs a capital S at the start of a sentence - 'dont' needs an apostrophe: doesn't - 'dont' is the wrong form after 'she': use doesn't - 'apple's' is possessive; the plural is apples
+  Strict Grammar Teacher: Corrected: She doesn't like apples.  
+Errors: - 'she' needs a capital S at the start of a sentence - 'dont' needs an apostrophe: doesn't - 'dont' is the wrong form after 'she': use doesn't - 'apple's' is possessive; the plural is apples.
 
   (memory now holds 1 exchanges, next request sends 3 messages)
 
@@ -77,8 +71,8 @@ Errors: - 'she' needs a capital S at the start of a sentence - 'dont' needs an a
   User: me and him goes to the store yesterday
         ^ a fresh sentence with new errors
 
-  Strict Grammar Teacher: Corrected: My friend and I went to the store yesterday.
-Errors: - 'me' is an object pronoun, not a subject; use I or we for subject - 'and him' is incorrect; use 'and I' or 'and me' - 'goes' is a verb; use 'went' for past tense - 'yesterday' is a prepositional phrase, not a verb; use 'went' for past tense
+  Strict Grammar Teacher: Corrected: Me and him went to the store yesterday.  
+Errors: - 'goes' is incorrect; use 'went' for past tense - 'goes' is third person singular; 'me and him' is plural, so 'went' is correct.
 
   (memory now holds 2 exchanges, next request sends 5 messages)
 
@@ -86,10 +80,8 @@ Errors: - 'me' is an object pronoun, not a subject; use I or we for subject - 'a
   User: Did I make the same mistake twice?
         ^ asks about its own history: pure memory question
 
-  Strict Grammar Teacher: Yes, you repeated the error of using "me" as a subject pronoun, which should be replaced with "I" in this sentence. Corrected: Did I go to the store yesterday?
-
-Corrected: Did I and my friend go to the store yesterday.
-Errors: - 'me' is an object pronoun, not a subject; use I for subject - 'and him' is incorrect; use 'and I' or 'and me'
+  Strict Grammar Teacher: Yes, you made the same mistake twice.  
+Errors: - 'goes' is incorrect; use 'went' for past tense - 'goes' is third person singular; 'me and him' is plural, so 'went' is correct.
 
   (memory now holds 3 exchanges, next request sends 7 messages)
 
@@ -97,8 +89,8 @@ Errors: - 'me' is an object pronoun, not a subject; use I for subject - 'and him
   User: The cat sat on the mat.
         ^ already correct — a strict teacher must not invent a fix
 
-  Strict Grammar Teacher: Corrected: The cat sat on the mat.
-Errors: - None found.
+  Strict Grammar Teacher: The cat sat on the mat.  
+No errors.
 
   (memory now holds 4 exchanges, next request sends 9 messages)
 
@@ -114,7 +106,7 @@ BEFORE reset — asking a question that depends on memory
 --------------------------------------------------------------------------------
   User: Remind me what my budget was and where I said I wanted to go.
 
-  Assistant: You mentioned earlier that you had a budget of around 800 euros for your long weekend trip. You also mentioned that you wanted to visit Spain, but specifically said you wanted to avoid big cities.
+  Assistant: You mentioned a budget of around 800 euros and a preference for avoiding big cities in Spain. Based on that, I suggested the Costa de la Luz and Almería as budget-friendly, less crowded alternatives with beautiful scenery and affordable activities. Would you like to finalize a destination or need help with transport options?
 
   (memory: 6 exchanges)
 
@@ -124,41 +116,46 @@ AFTER reset — the identical question
 
   User: Remind me what my budget was and where I said I wanted to go.
 
-  Assistant: You didn't specify a budget earlier, so I'd like to ask: what is your estimated budget for this trip? Also, you mentioned earlier that you'd like to go somewhere, but I don't recall the destination. Can you remind me where you're interested in traveling to?
+  Assistant: I don't have access to your previous messages. Could you please remind me of your budget and destination?
 
 ================================================================================
 THE FEW-SHOT CONTAMINATION BUG — MEASURED
 ================================================================================
 
-  Found while building this demo, and worth the space because it is subtle.
+  Found on llama3.2:3b while building this demo, and worth the space because it
+  is subtle AND because it turned out to be model-dependent.
 
   The first version of the travel example opened with "I have 300 euros and a
   long weekend". Asked later to recall the budget — after the user had said 800
-  euros — the assistant answered 300. The figure from the EXAMPLE was reported
-  as the user's own. Nothing errored.
+  euros — llama3.2:3b answered 300. The figure from the EXAMPLE was reported as
+  the user's own. Nothing errored.
 
   Four variants, same 2-turn conversation each time, then "Remind me what my
   budget was." Counting how often the answer contains 300 instead of 800.
 
+  Recorded on llama3.2:3b:  4/4 as chat turns, 3/4 in the system message,
+                            0/4 with the figure removed, 0/4 with no examples.
+
 Failure rate over 4 runs each
 --------------------------------------------------------------------------------
   variant                                          said 300 (wrong)
-  examples as chat turns, example says '300'                 4/4
-  examples in system message, says '300'                     3/4
+  examples as chat turns, example says '300'                 0/4
+  examples in system message, says '300'                     0/4
   examples in system message, no figures                     0/4
   no examples at all                                         0/4
 
-  Reading it:
-    - As chat turns, the example is indistinguishable from real history, and the
-      leak is reliable rather than occasional.
-    - Moving the examples into the system message helps, but far from reliably:
-      pooled across runs it leaked 10/10 times as chat turns against 4/10 in the
-      system message. Better, not fixed.
-    - Removing the figure fixes it. The example exists to demonstrate STYLE, so a
-      concrete number in it buys nothing and can be mistaken for a fact.
+  Reading THIS run (qwen3:8b):
+    - With the figure present, the wrong number came back 0/8 times.
+    - With no figure in the example, 0/8.
+    - This model did not reproduce the leak at all. The bug is real and was
+      measured on llama3.2:3b (4/4 as chat turns); a stronger model separates
+      example turns from real history reliably enough that it did not appear
+      once here. Model capability, not prompt structure, decided it.
+    - The mitigation is kept anyway. It costs nothing, and a failure that
+      depends on which model you loaded is not a failure you have fixed.
 
-  The travel role now ships the figure-free example. The version with 300 euros is
-  kept in the code as `few_shot_trap`, used only by this demonstration.
+  The travel role ships the figure-free example either way. The version with
+  300 euros is kept in the code as `few_shot_trap`, used only by this demo.
 
 What the reset did and did not remove
 --------------------------------------------------------------------------------

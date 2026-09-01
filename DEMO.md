@@ -1,7 +1,7 @@
 # Demo Dialogues
 
 The deliverable: multi-turn conversations showing the assistant holding its role and using
-memory. Captured from a real run — `llama3.2:3b` via Ollama. Full log:
+memory. Captured from a real run — `qwen3:8b` via Ollama, thinking disabled. Full log:
 [`docs/output.txt`](docs/output.txt).
 
 ---
@@ -159,25 +159,34 @@ The travel example originally opened with *"I have 300 euros and a long weekend.
 the budget after the user said **800**, the assistant answered **300** — the example's figure,
 reported as the user's own. Nothing errored.
 
-Measured over 4 runs per variant:
+Measured over 4 runs per variant, on both models this project has run on. Said 300 (wrong):
 
-| Variant | Said 300 (wrong) |
-|---|---|
-| Examples injected as chat turns, example says "300" | **4/4** |
-| Examples folded into the system message, says "300" | **3/4** |
-| Examples in the system message, no figures | **0/4** |
-| No examples at all | **0/4** |
+| Variant | llama3.2:3b | qwen3:8b |
+|---|---|---|
+| Examples injected as chat turns, example says "300" | **4/4** | **0/4** |
+| Examples folded into the system message, says "300" | **3/4** | **0/4** |
+| Examples in the system message, no figures | 0/4 | 0/4 |
+| No examples at all | 0/4 | 0/4 |
 
-To the model, an injected example turn is indistinguishable from something the user said. Moving
-the examples into the system message helped but did not fix it — pooled across all runs it leaked
-10/10 times as chat turns against 4/10 in the system message. **Removing the figure fixed it.**
+**On llama3.2:3b:** an injected example turn was indistinguishable from something the user said.
+Moving the examples into the system message helped but did not fix it — pooled across all runs it
+leaked 10/10 times as chat turns against 4/10 in the system message. Removing the figure fixed it.
 
-The lesson: a few-shot example exists to demonstrate *style*. A concrete number in one buys
-nothing and can be misread as a fact — and because examples survive a memory reset, the wrong
-figure outlives the conversation it contaminated.
+**On qwen3:8b the leak did not appear once**, not even in the worst variant. So the bug is real —
+it was measured, repeatedly, on a real model — but it is a *capability* failure, not a structural
+one: a stronger model keeps example turns and real history apart on its own.
 
-The shipped travel role now uses a figure-free example, with the original kept as `few_shot_trap`
-for this demonstration, and a test asserts the shipped one contains no figures.
+That changes what to conclude, not what to do. A failure that depends on which model you loaded is
+not a failure you have fixed, and the mitigation costs nothing: a few-shot example exists to
+demonstrate *style*, so a concrete number in one buys nothing and can be misread as a fact. Since
+examples also survive a memory reset, a wrong figure outlives the conversation it contaminated.
+
+The shipped travel role uses a figure-free example either way, with the original kept as
+`few_shot_trap` for this demonstration, and a test asserts the shipped one contains no figures.
+
+`run_demo.py` now derives this section's wording from the numbers it just measured. The earlier
+version printed the llama3.2:3b conclusions as fact, which meant that on qwen3:8b it printed a
+table of zeroes above a paragraph insisting the leak was reliable.
 
 ---
 
